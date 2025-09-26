@@ -1,6 +1,8 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This is the provided NumberTriangle class to be used in this coding task.
@@ -65,7 +67,27 @@ public class NumberTriangle {
      * Note: a NumberTriangle contains at least one value.
      */
     public void maxSumPath() {
-        // for fun [not for credit]:
+        Map<NumberTriangle, Integer> memo = new HashMap<>();
+        this.root = maxSumHelper(this, memo);
+        this.left = null;
+        this.right = null;
+    }
+
+    private static int maxSumHelper(NumberTriangle node, Map<NumberTriangle, Integer> memo) {
+        if (memo.containsKey(node)) return memo.get(node);
+
+        if (node.isLeaf()) {
+            memo.put(node, node.root);
+            return node.root;
+        }
+
+        int childMax = Integer.MIN_VALUE;
+        if (node.left != null)  childMax = Math.max(childMax, maxSumHelper(node.left, memo));
+        if (node.right != null) childMax = Math.max(childMax, maxSumHelper(node.right, memo));
+
+        int best = node.root + childMax;
+        memo.put(node, best);
+        return best;
     }
 
 
